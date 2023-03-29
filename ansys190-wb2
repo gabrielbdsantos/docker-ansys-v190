@@ -1,0 +1,32 @@
+#!/bin/bash
+
+mkdir -p $HOME/.ansys/v190
+echo "ANSYSProductImprovementProgram=off" >$HOME/.ansys/v190/ApipUserConfig.txt
+
+# Save the current permissions
+HOME_CHMOD=$(stat -c %a $HOME)
+
+# Change the permissions for the $HOME. The original permissions are restored
+# at the end. See the last comments in
+# https://forum.ansys.com/forums/topic/runtime-errors-on-centos-7-system/
+chmod 754 $HOME
+
+x11docker \
+	--hostdisplay \
+	--clipboard \
+	--network \
+	--ipc=host \
+	-- \
+	--cap-drop=ALL \
+	--security-opt=no-new-privileges \
+	--shm-size=2G \
+	--ulimit memlock=-1:-1 \
+	--ulimit stack=1073741824:1073741824 \
+	-e "LANG=$LANG" \
+	-e "LC_ALL=C" \
+	-v /opt/ansys/v190/ansys_inc:/opt/ansys_inc \
+	-v $HOME:$HOME \
+	-- local/centos7.3-ansys-v190 runwb2 -oglmesa
+
+# Change permissions back to the original
+chmod $HOME_CHMOD $HOME
