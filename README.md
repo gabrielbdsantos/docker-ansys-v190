@@ -9,6 +9,15 @@ A step-by-step guide for running ANSYS v190 on any Linux distribution within a C
 
 ## Install
 
+### Install x11docker
+
+Simply run the following command in the terminal.
+
+```{bash}
+curl -fsSL https://raw.githubusercontent.com/mviereck/x11docker/master/x11docker \
+| sudo bash -s -- --update
+```
+
 ### Install and setup docker
 
 1. Install docker.<br>
